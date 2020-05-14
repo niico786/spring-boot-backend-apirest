@@ -22,7 +22,10 @@ public class Cliente implements Serializable {
 	
 	@Column(nullable=false)
 	private String nombre;
+	
+	@Column(nullable=false)
 	private String apellido;
+	
 	@Column(nullable=false, unique=true)
 	private String email;
 	
