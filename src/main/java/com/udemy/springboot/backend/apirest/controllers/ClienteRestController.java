@@ -1,5 +1,6 @@
  package com.udemy.springboot.backend.apirest.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -160,6 +161,7 @@ public class ClienteRestController {
 			Map<String,Object> response = new HashMap<String, Object>();
 			
 			try {
+				deleteFotoAnterior(clienteService.findById(id));
 				clienteService.delete(id);
 			} catch (DataAccessException e) {
 				response.put("mensaje", "Error al eliminar el cliente en la base de datos!");
@@ -180,14 +182,17 @@ public class ClienteRestController {
 			
 			if(!archivo.isEmpty()) {
 				String nombreArchivo = UUID.randomUUID().toString() + "_" + archivo.getOriginalFilename().replace(" ", "");
+				
 				Path rutaArchivo = Paths.get("uploads").resolve(nombreArchivo).toAbsolutePath();
 				
 				try {
 					Files.copy(archivo.getInputStream(), rutaArchivo);
-				} catch (IOException e) {
+				} catch (IOException e) { 
 					response.put("mensaje", "Error al subir la imagen del cliente: " + nombreArchivo);
 					response.put("error", e.getMessage().concat(": ").concat(e.getCause().getMessage()));  
 				}
+				
+				deleteFotoAnterior(cliente);
 				
 				cliente.setFoto(nombreArchivo);
 				
@@ -199,6 +204,21 @@ public class ClienteRestController {
 			}
 			
 			return new ResponseEntity<Map<String,Object>>(response, HttpStatus.CREATED);
+		}
+		
+		private void deleteFotoAnterior (Cliente cliente) {
+			
+			String nombreFotoAnterior = cliente.getFoto();
+			
+			if (nombreFotoAnterior != null && nombreFotoAnterior.length() > 0) {
+				Path rutaFotoAnterior = Paths.get("uploads").resolve(nombreFotoAnterior).toAbsolutePath();
+				File archivoFotoAnterior = rutaFotoAnterior.toFile();
+				
+				if(archivoFotoAnterior.exists() && archivoFotoAnterior.canRead())
+					archivoFotoAnterior.delete();
+				
+			}
+			
 		}
 		
 }
