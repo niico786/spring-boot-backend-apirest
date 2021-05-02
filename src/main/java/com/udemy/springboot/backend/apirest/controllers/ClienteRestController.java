@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.udemy.springboot.backend.apirest.models.entity.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.DataAccessException;
@@ -141,6 +142,7 @@ public class ClienteRestController {
 				clienteActual.setNombre(cliente.getNombre());
 				clienteActual.setEmail(cliente.getEmail());
 				clienteActual.setCreateAt(cliente.getCreateAt());
+				clienteActual.setRegion(cliente.getRegion());
 				
 				clienteUpdated = clienteService.save(clienteActual);
 			} catch (DataAccessException e) {
@@ -229,7 +231,11 @@ public class ClienteRestController {
 			
 			return new ResponseEntity<Resource>(recurso, cabecera, HttpStatus.OK);
 
-			 
+		}
+
+		@GetMapping(value = "/clientes/regiones")
+		public ResponseEntity<List<Region>> listarRegiones () {
+			return new ResponseEntity<>(clienteService.findAllRegiones(),HttpStatus.OK);
 		}
 		
 }
