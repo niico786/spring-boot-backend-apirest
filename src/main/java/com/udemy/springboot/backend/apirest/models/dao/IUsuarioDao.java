@@ -6,9 +6,9 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface IUsuarioDao extends CrudRepository <Usuario,Long> {
 
-    public Usuario findByUserName(String username);
+    public Usuario findByUsername(String username);
 
     @Query("Select u from Usuario u where username=?1")
-    public Usuario findByUserNameQuery (String userName);
+    public Usuario findByUsernameQuery (String userName);
 
 }
